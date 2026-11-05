@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--Created by Labib Ahmed and Nicholas Abdalla -->
+        
+        
+        <title>GPA Calculator</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="GPA, GPA Calculator">
+        <meta name="description" content="GPA Calculator">
+        <meta name="author" content="Nicholas Abdalla and Labib Ahmed">
+        <link rel="icon" type="image/x-icon" href="https://codehs.com/uploads/fd6b7b15bfe86362d8ce4227c9f1ddbd">
+        <style>
+            /*Most measures are % so it looks the same on different size screens*/
+            /* Box */
+            .box {
+                width: 90%;
+                max-width: 550px;
+                margin: 10% auto 0 auto;
+                background-color: #dedfe0;
+                padding: 4%;
+                border-radius: 14px;
+                box-shadow: 0 20px 20px rgba(1, 0, 0, 0.1);
+                color: #dedfe0;
+                box-sizing: border-box;
+            }
+
+            /* Table Styling */
+            td, th {
+                color: black;
+            }
+
+            table, td, th {
+                border: 1px solid black;
+                border-collapse: separate;
+                border-style: groove;
+            }
+
+            table {
+                border-radius: 10px;
+                width: 100%;
+            }
+
+            .center {
+                align-items: center;
+            }
+
+            h1 {
+                text-align: center;
+                color: black;
+            }
+
+            th:first-child {
+                border-top-left-radius: 8px;
+            }
+
+            th:last-child {
+                border-top-right-radius: 8px;
+            }
+
+            tr:last-child td:first-child {
+                border-bottom-left-radius: 8px;
+            }
+
+            tr:last-child td:last-child {
+                border-bottom-right-radius: 8px;
+            }
+
+            /* Input Types Styling */
+            input[type="text"],
+            select {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 2% 3%;
+                margin-top: 2%;
+                border: 2px solid #b8b9ba;
+                border-radius: 8px;
+                background-color: white;
+                color: black;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            input[type="text"]:focus,
+            select:focus {
+                border-color: #777;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            }
+
+            select {
+                cursor: pointer;
+            }
+
+            /* Button Styling */
+            .centerbuttons {
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .buttonl,
+            .buttonr {
+                background-color: #878c8c;
+                border: none;
+                color: black;
+                padding: 3% 7%;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 10000px;
+            }
+
+            button:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+                background-color: #6e7373;
+                transition: 2s;
+            }
+
+            /* Fade In Effect */
+            .box {
+                animation: fadeIn 1s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            /*result styling*/
+            #result{
+                color:red;
+                font-family: 'sans-serif';
+                display:inline;
+                margin-left:10%;
+                font-size:1em;
+            }
+            #result2{
+                color:red;
+                font-family: 'sans-serif';
+                display:inline;
+                margin-left:15%;
+                font-size:1em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h1>💯 GPA Calculator 📝</h1>
+
+            <table>
+                <tr>
+                    <th>Class</th>
+                    <th>Grade</th>
+                    <th>Weight</th>
+                </tr>
+            </table><br>
+            <div class="centerbuttons">
+                <button type="button" onclick="Calc()" class="buttonl">Calculate</button>
+                <button type="button" onclick="addRow()" class="buttonr">Add Class</button>
+            </div>
+            <br>
+            <h3 id="result"></h3>
+            <h3 id="result2"></h3>
+        </div>
+        
+        <script>
+            //Define Global Arrays
+            let classArray = [];
+            let gradeArray = [];
+            let weightArray = [];
+            //Will be filled in with converted values EX: A = 4
+            let gpaArray = [];
+            let weight2Array = [];
+            let weightedArray = [];
+            //define temp for total gpa
+            let temp = 0;
+            let finalGPA;
+            let finalweightGPA;
+
+            //Calculates GPA
+            function Calc(){
+                temp = 0;
+                finalGPA = undefined;
+                finalweightGPA = undefined;
+                gpaArray = [];
+                weight2Array = [];
+                weightedArray = [];
+                getClasses();
+                for (let i = 0; i < gradeArray.length; i++) {
+                    gpaArray.push(lettertogpa(gradeArray[i]));
+                }
+                for (let i = 0; i < weightArray.length; i++) {
+                    weight2Array.push(weightvalues(weightArray[i]));
+                }
+                //adds gpa values together
+                for(let i = 0; i < gpaArray.length;i++){
+                    temp = gpaArray[i]+temp
+                }
+                finalGPA = temp/gradeArray.length
+                finalGPA = Math.round(finalGPA*100)/100;
+                temp = 0;
+                //add weighted gpa values
+                for(let i=0; i < gpaArray.length;i++){
+                    temp += (gpaArray[i] + weight2Array[i]);
+                }
+                finalweightGPA = temp/gradeArray.length
+                finalweightGPA = Math.round(finalweightGPA*100)/100;
+                document.getElementById("result").innerHTML = "Final GPA: " + finalGPA
+                document.getElementById("result2").innerHTML = "Weighted GPA: " + finalweightGPA
+                console.log ('total weighted GPA:',finalweightGPA)    
+                console.log ("total GPA:",finalGPA)
+                console.log("Weight GPA:",weight2Array)
+                console.log("GPA Numbers:",gpaArray)
+            }
+
+            //Adds new table row
+            function addRow() {
+                const table = document.querySelector("table");
+
+                const row = table.insertRow(-1);
+                //Class part of the row
+                const classCell = row.insertCell(0);
+                classCell.innerHTML = `
+                    <input type="text" name="className" placeholder="Class Name">
+                `;
+                //Grade part of the row
+                const gradeCell = row.insertCell(1);
+                gradeCell.innerHTML = `
+                    <select name="grade">
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="D+">D+</option>
+                        <option value="D">D</option>
+                        <option value="D-">D-</option>
+                        <option value="F">F</option>
+                    </select>
+                `;
+                //Weight part of the row 
+                const weightCell = row.insertCell(2);
+                weightCell.innerHTML = `
+                    <select name="weight">
+                        <option value="Regular">Regular</option>
+                        <option value="Honors">Honors</option>
+                        <option value="AP_IB">AP/IB</option>
+                    </select>
+                `;
+            }
+
+            // Get user inputs WIP
+            function getClasses() {
+                const rows = document.querySelectorAll("table tr");
+
+                classArray = [];
+                gradeArray = [];
+                weightArray = [];
+
+                for (let i = 0; i < rows.length; i++) {
+                    const classInput = rows[i].querySelector('[name="className"]');
+                    const gradeInput = rows[i].querySelector('[name="grade"]');
+                    const weightInput = rows[i].querySelector('[name="weight"]');
+
+                    if (!classInput || !gradeInput || !weightInput) {
+                        continue;
+                    }
+
+                    const className = classInput.value;
+                    const grade = gradeInput.value;
+                    const weight = weightInput.value;
+
+                    classArray.push(className);
+                    gradeArray.push(grade);
+                    weightArray.push(weight);
+                }
+                //For Testing 
+                console.log("Classes:", classArray);
+                console.log("Grades:", gradeArray);
+                console.log("Weights:", weightArray);
+            }
+
+            //translate letter grades to GPA 
+            function lettertogpa(letter){
+                switch(letter){
+                    case "A+":
+                        return 4;
+                    case "A":
+                        return 4;
+                    case "A-":
+                        return 3.7;
+                    case "B+":
+                        return 3.3;
+                    case "B":
+                        return 3;
+                    case "B-":
+                        return 2.7;
+                    case "C+":
+                        return 2.3;
+                    case "C":
+                        return 2;
+                    case "C-":
+                        return 1.7;
+                    case "D+":
+                        return 1.3; 
+                    case "D":
+                        return 1;
+                    case "D-":
+                        return 0.7;
+                    case "F":
+                        return 0;
+                }
+            }
+
+            //find values of weight for weighted gpa
+            function weightvalues(weight){
+                switch(weight){
+                    case "Regular":
+                        return 0;
+                    case "Honors":
+                        return 0.5;
+                    case "AP_IB":
+                        return 1;
+                }
+            }
+
+            //Call addRow to create the first row
+            addRow();
+        </script>
+    </body>
+</html>
